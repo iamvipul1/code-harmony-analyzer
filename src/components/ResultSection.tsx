@@ -48,7 +48,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
           disabled={similarityScore === 0 || !diffImage}
         >
           <Download className="mr-2 h-4 w-4" />
-          Download Report
+          Download PDF Report
         </Button>
       </div>
 
@@ -70,8 +70,9 @@ const ResultSection: React.FC<ResultSectionProps> = ({
               <CardContent>
                 {diffImage ? (
                   <div className="max-h-[500px] overflow-auto border rounded-md">
+                    {/* Use direct base64 data URL if that's what we're receiving */}
                     <img 
-                      src={diffImage} 
+                      src={diffImage.startsWith('data:') ? diffImage : `data:image/png;base64,${diffImage}`} 
                       alt="Code differences" 
                       className="w-full h-auto"
                     />
@@ -96,7 +97,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 {astImage1 ? (
                   <div className="max-h-[500px] overflow-auto border rounded-md">
                     <img 
-                      src={astImage1} 
+                      src={astImage1.startsWith('data:') ? astImage1 : `data:image/png;base64,${astImage1}`} 
                       alt="AST Tree for code 1" 
                       className="w-full h-auto"
                     />
@@ -121,7 +122,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 {astImage2 ? (
                   <div className="max-h-[500px] overflow-auto border rounded-md">
                     <img 
-                      src={astImage2} 
+                      src={astImage2.startsWith('data:') ? astImage2 : `data:image/png;base64,${astImage2}`} 
                       alt="AST Tree for code 2" 
                       className="w-full h-auto"
                     />
