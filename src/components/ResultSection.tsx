@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SimilarityScore from './SimilarityScore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 
 interface ResultSectionProps {
   similarityScore: number;
@@ -24,6 +26,8 @@ const ResultSection: React.FC<ResultSectionProps> = ({
   onDownloadReport,
   isLoading
 }) => {
+  const { toast } = useToast();
+  
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
@@ -37,10 +41,35 @@ const ResultSection: React.FC<ResultSectionProps> = ({
     );
   }
 
-  const getImageSrc = (imageData: string | null) => {
-    if (!imageData) return null;
-    if (imageData.startsWith('data:')) return imageData;
-    return `data:image/png;base64,${imageData}`;
+  const renderImage = (imageData: string | null, altText: string) => {
+    if (!imageData) {
+      return (
+        <div className="text-center p-8 text-muted-foreground">
+          Compare code to see visualization
+        </div>
+      );
+    }
+    
+    // Try to display the image with direct src
+    return (
+      <div className="max-h-[500px] overflow-auto border rounded-md">
+        <img 
+          src={imageData.startsWith('data:') ? imageData : `data:image/png;base64,${imageData}`} 
+          alt={altText} 
+          className="w-full h-auto"
+          onError={(e) => {
+            // If image fails to load, log error and show fallback
+            console.error("Failed to load image:", e);
+            toast({
+              title: "Image loading error",
+              description: "Failed to load visualization image",
+              variant: "destructive"
+            });
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
+      </div>
+    );
   };
 
   return (
@@ -73,19 +102,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {diffImage ? (
-                  <div className="max-h-[500px] overflow-auto border rounded-md">
-                    <img 
-                      src={getImageSrc(diffImage)} 
-                      alt="Code differences" 
-                      className="w-full h-auto"
-                    />
-                  </div>
-                ) : (
-                  <div className="text-center p-8 text-muted-foreground">
-                    Compare code to see differences
-                  </div>
-                )}
+                {renderImage(diffImage, "Code differences")}
               </CardContent>
             </Card>
           </TabsContent>
@@ -98,19 +115,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {astImage1 ? (
-                  <div className="max-h-[500px] overflow-auto border rounded-md">
-                    <img 
-                      src={getImageSrc(astImage1)} 
-                      alt="AST Tree for code 1" 
-                      className="w-full h-auto"
-                    />
-                  </div>
-                ) : (
-                  <div className="text-center p-8 text-muted-foreground">
-                    Compare code to see AST tree
-                  </div>
-                )}
+                {renderImage(astImage1, "AST Tree for code 1")}
               </CardContent>
             </Card>
           </TabsContent>
@@ -123,19 +128,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {astImage2 ? (
-                  <div className="max-h-[500px] overflow-auto border rounded-md">
-                    <img 
-                      src={getImageSrc(astImage2)} 
-                      alt="AST Tree for code 2" 
-                      className="w-full h-auto"
-                    />
-                  </div>
-                ) : (
-                  <div className="text-center p-8 text-muted-foreground">
-                    Compare code to see AST tree
-                  </div>
-                )}
+                {renderImage(astImage2, "AST Tree for code 2")}
               </CardContent>
             </Card>
           </TabsContent>
