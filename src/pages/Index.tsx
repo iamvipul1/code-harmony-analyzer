@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FileDown, FileUp, Github, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,7 @@ import SampleCodeDropdown from '@/components/SampleCodeDropdown';
 import FileUploadButton from '@/components/FileUploadButton';
 import ResultSection from '@/components/ResultSection';
 import { sampleCodes } from '@/data/sampleCodes';
-import { compareCodes, downloadReport } from '@/services/apiService';
+import { compareCodes } from '@/services/apiService';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -19,15 +18,9 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [comparisonResult, setComparisonResult] = useState<{
     similarityScore: number;
-    astImage1: string | null;
-    astImage2: string | null;
-    diffImage: string | null;
     textSummary: string | null;
   }>({
     similarityScore: 0,
-    astImage1: null,
-    astImage2: null,
-    diffImage: null,
     textSummary: null
   });
 
@@ -42,9 +35,6 @@ const Index = () => {
       const result = await compareCodes(code1, code2);
       setComparisonResult({
         similarityScore: result.similarityScore,
-        astImage1: result.astImage1,
-        astImage2: result.astImage2,
-        diffImage: result.diffImage,
         textSummary: result.textSummary
       });
       toast.success('Code comparison completed');
@@ -61,16 +51,9 @@ const Index = () => {
     setCode2('');
     setComparisonResult({
       similarityScore: 0,
-      astImage1: null,
-      astImage2: null,
-      diffImage: null,
       textSummary: null
     });
     toast.info('Editors cleared');
-  };
-
-  const handleDownloadReport = () => {
-    downloadReport();
   };
 
   return (
@@ -174,11 +157,7 @@ const Index = () => {
                 <h2 className="text-xl font-semibold mb-4">Analysis Results</h2>
                 <ResultSection 
                   similarityScore={comparisonResult.similarityScore}
-                  astImage1={comparisonResult.astImage1}
-                  astImage2={comparisonResult.astImage2}
-                  diffImage={comparisonResult.diffImage}
                   textSummary={comparisonResult.textSummary}
-                  onDownloadReport={handleDownloadReport}
                   isLoading={isLoading}
                 />
               </CardContent>
