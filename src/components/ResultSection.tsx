@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -38,6 +37,12 @@ const ResultSection: React.FC<ResultSectionProps> = ({
     );
   }
 
+  const getImageSrc = (imageData: string | null) => {
+    if (!imageData) return null;
+    if (imageData.startsWith('data:')) return imageData;
+    return `data:image/png;base64,${imageData}`;
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 animate-fade-in">
       <div className="flex flex-col items-center justify-center p-4">
@@ -70,9 +75,8 @@ const ResultSection: React.FC<ResultSectionProps> = ({
               <CardContent>
                 {diffImage ? (
                   <div className="max-h-[500px] overflow-auto border rounded-md">
-                    {/* Use direct base64 data URL if that's what we're receiving */}
                     <img 
-                      src={diffImage.startsWith('data:') ? diffImage : `data:image/png;base64,${diffImage}`} 
+                      src={getImageSrc(diffImage)} 
                       alt="Code differences" 
                       className="w-full h-auto"
                     />
@@ -97,7 +101,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 {astImage1 ? (
                   <div className="max-h-[500px] overflow-auto border rounded-md">
                     <img 
-                      src={astImage1.startsWith('data:') ? astImage1 : `data:image/png;base64,${astImage1}`} 
+                      src={getImageSrc(astImage1)} 
                       alt="AST Tree for code 1" 
                       className="w-full h-auto"
                     />
@@ -122,7 +126,7 @@ const ResultSection: React.FC<ResultSectionProps> = ({
                 {astImage2 ? (
                   <div className="max-h-[500px] overflow-auto border rounded-md">
                     <img 
-                      src={astImage2.startsWith('data:') ? astImage2 : `data:image/png;base64,${astImage2}`} 
+                      src={getImageSrc(astImage2)} 
                       alt="AST Tree for code 2" 
                       className="w-full h-auto"
                     />
