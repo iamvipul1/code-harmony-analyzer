@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { FileDown, FileUp, Github, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -174,6 +175,11 @@ const Index = () => {
           </p>
           <p className="text-sm text-muted-foreground">
             Built with React, Tailwind CSS, and ShadCN UI
+          </p>
+        </div>
+        <div className="container mt-2 text-center md:text-left">
+          <p className="text-sm text-muted-foreground">
+            <strong>Authors:</strong> Vipul, Kiran, Karthik, Phaniraj, Prof. UmaShankari
           </p>
         </div>
       </footer>
